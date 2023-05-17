@@ -4,7 +4,7 @@ import com.example.demo.blogapplication.dto.LoginDto;
 import com.example.demo.blogapplication.dto.RegisterDto;
 
 public interface AuthService {
-    String login(LoginDto loginDto);
+    String login(LoginDto loginDto, long time);
 
     String register(RegisterDto registerDto);
 }

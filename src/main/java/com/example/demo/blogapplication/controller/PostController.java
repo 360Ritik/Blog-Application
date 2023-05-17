@@ -3,6 +3,10 @@ package com.example.demo.blogapplication.controller;
 import com.example.demo.blogapplication.dto.PostDto;
 import com.example.demo.blogapplication.model.AppConstants;
 import com.example.demo.blogapplication.service.repo.PostService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/v1/posts")
+@Tag(name = "Crud rest Api's for Post"
+)
 public class PostController {
 
     final
@@ -24,6 +30,18 @@ public class PostController {
         this.postService = postService;
     }
 
+
+    @Operation(
+            summary = "create post rest Api",
+            description = "create post rest Api to save new post"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "HTTP Status 201 created"
+    )
+    @SecurityRequirement(
+            name = "bearer Authencitaion"
+    )
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public ResponseEntity<PostDto> savePost(@Valid @RequestBody PostDto postDto) {
@@ -39,7 +57,7 @@ public class PostController {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable(name = "id") Long id) {
 
         return new ResponseEntity<>(postService.postById(id), HttpStatus.OK);
@@ -47,6 +65,9 @@ public class PostController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
+    @SecurityRequirement(
+            name = "bearer Authencitaion"
+    )
     public ResponseEntity<PostDto> getUpdateById(@Valid @PathVariable(name = "id") Long id,
                                                  @RequestBody PostDto postDto) {
 
@@ -55,8 +76,19 @@ public class PostController {
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(
+            name = "bearer Authencitaion"
+    )
     public ResponseEntity<String> getDeleteById(@PathVariable Long id) {
         postService.deleteById(id);
         return new ResponseEntity<>("Post deleted Successfully", HttpStatus.OK);
+    }
+
+    // Build Get Posts by Category REST API
+    // http://localhost:8080/api/posts/category/3
+    @GetMapping("/api/v1/posts/category/{id}")
+    public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable("id") Long categoryId) {
+        List<PostDto> postDtos = postService.getPostByCategory(categoryId);
+        return ResponseEntity.ok(postDtos);
     }
 }

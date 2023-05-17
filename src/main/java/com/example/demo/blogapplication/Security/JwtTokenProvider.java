@@ -23,12 +23,12 @@ public class JwtTokenProvider {
     private long jwtExpirationDate;
 
     // generate JWT token
-    public String generateToken(Authentication authentication) {
+    public String generateToken(Authentication authentication, long time) {
         String username = authentication.getName();
 
         Date currentDate = new Date();
 
-        Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
+        Date expireDate = new Date(currentDate.getTime() + time * jwtExpirationDate);
 
         String token = Jwts.builder()
                 .setSubject(username)
@@ -65,7 +65,7 @@ public class JwtTokenProvider {
                     .parse(token);
             return true;
         } catch (MalformedJwtException ex) {
-            throw new MalformedJwtException("invalid jwt token");
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "invalid token");
         } catch (ExpiredJwtException ex) {
             throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Expired JWT token");
         } catch (UnsupportedJwtException ex) {

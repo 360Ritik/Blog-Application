@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/auth/")
+@RequestMapping("api/v1/auth/")
 public class AuthController {
 
 
@@ -26,9 +26,11 @@ public class AuthController {
     @PostMapping(value = {"/login", "/signin"})
     public ResponseEntity<JWTAuthResponse> loginUser(@RequestBody LoginDto loginDto) {
 
-        String token = authService.login(loginDto);
+        String accessToken = authService.login(loginDto, 1L);
+        String refreshToken = authService.login(loginDto, 2L);
         JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
-        jwtAuthResponse.setAccessToken(token);
+        jwtAuthResponse.setAccessToken(accessToken);
+        jwtAuthResponse.setRefreshToken(refreshToken);
         return ResponseEntity.ok(jwtAuthResponse);
     }
 

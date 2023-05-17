@@ -47,10 +47,10 @@ public class AuthServiceImple implements AuthService {
     }
 
     @Override
-    public String login(LoginDto loginDto) {
+    public String login(LoginDto loginDto, long time) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtTokenProvider.generateToken(authentication);
+        return jwtTokenProvider.generateToken(authentication, time);
     }
 
 

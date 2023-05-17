@@ -75,6 +75,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+        // Create a custom error response object
+        ErrorResponse errorResponse = new ErrorResponse(statusCode, ex.getMessage());
+
+        // Return the error response with appropriate HTTP status code
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
+
 
 //    @ExceptionHandler({MalformedJwtException.class, ExpiredJwtException.class, UnsupportedJwtException.class,
 //            IllegalArgumentException.class})
