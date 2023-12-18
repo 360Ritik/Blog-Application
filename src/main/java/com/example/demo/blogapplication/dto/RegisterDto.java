@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RegisterDto {
     private String name;
-    private String username;
+
 
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])(?=.*[A-Z])[A-Za-z\\d@$!%*#?&]{8,}$",
             message = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character (@$!%*#?&)")

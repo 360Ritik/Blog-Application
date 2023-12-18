@@ -51,16 +51,9 @@ public class CommentServiceImple implements CommentService {
     }
 
     @Override
-    public CommentDto getCommentById(Long postId, Long commentId) {
+    public CommentDto getCommentById( Long commentId) {
         // retrieve post entity by id
-        Post post = postRepo.findById(postId).orElseThrow(
-                () -> new ResourceNotFoundException("Post", "id", postId));
-
-        Comment comment = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("comment", "id", commentId));
-
-        if (!comment.getPost().getId().equals(post.getId())) {
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");
-        }
+        Comment comment = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("comment not found", "id", commentId));
         return mapToDto(comment);
     }
 
@@ -77,7 +70,9 @@ public class CommentServiceImple implements CommentService {
 
     @Override
     public void getDeleteById(Long id) {
-        commentRepo.deleteById(id);
+       Comment comment  = commentRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("comment", "id", id));
+       if(comment!=null)
+        commentRepo.deleteById(comment.getId());
 
     }
 

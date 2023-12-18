@@ -20,7 +20,8 @@ import java.util.List;
 @RequestMapping("/api/v1/posts")
 @Tag(name = "Crud rest Api's for Post"
 )
-public class PostController {
+public class
+PostController {
 
     final
     PostService postService;
@@ -42,7 +43,7 @@ public class PostController {
     @SecurityRequirement(
             name = "bearer Authencitaion"
     )
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @PostMapping()
     public ResponseEntity<PostDto> savePost(@Valid @RequestBody PostDto postDto) {
         return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
@@ -71,7 +72,8 @@ public class PostController {
     public ResponseEntity<PostDto> getUpdateById(@Valid @PathVariable(name = "id") Long id,
                                                  @RequestBody PostDto postDto) {
 
-        return new ResponseEntity<>(postService.updateById(id, postDto), HttpStatus.OK);
+        return new ResponseEntity<>(postService.
+                updateById(id, postDto), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
@@ -84,8 +86,8 @@ public class PostController {
         return new ResponseEntity<>("Post deleted Successfully", HttpStatus.OK);
     }
 
-    // Build Get Posts by Category REST API
-    // http://localhost:8080/api/posts/category/3
+
+
     @GetMapping("/api/v1/posts/category/{id}")
     public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable("id") Long categoryId) {
         List<PostDto> postDtos = postService.getPostByCategory(categoryId);

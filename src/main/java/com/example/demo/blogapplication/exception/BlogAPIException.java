@@ -1,10 +1,12 @@
 package com.example.demo.blogapplication.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 
 public class BlogAPIException extends RuntimeException {
 
+    @Getter
     private final HttpStatus status;
     private final String message;
 
@@ -13,14 +15,10 @@ public class BlogAPIException extends RuntimeException {
         this.message = message;
     }
 
-    public BlogAPIException(String message, HttpStatus status, String message1) {
+    public BlogAPIException(String message, HttpStatus status) {
         super(message);
         this.status = status;
-        this.message = message1;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
+        this.message = message;
     }
 
     @Override

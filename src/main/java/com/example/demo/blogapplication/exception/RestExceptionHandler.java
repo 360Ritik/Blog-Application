@@ -14,53 +14,43 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> handleNodataFoundException(
+    public ResponseEntity<ErrorResponse> handleNodataFoundException(
             ResourceNotFoundException ex, WebRequest request) {
+              ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
 
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp:", LocalDateTime.now());
-        body.put("message:", "No data found");
-        body.put("description:", request.getDescription(false));
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(JwtIncorrectException.class)
+    public final ResponseEntity<ErrorResponse> handleJwtIncorrectException(Exception ex, WebRequest request)
+            throws Exception {
+
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex,
-                                                              WebRequest request) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp:", LocalDateTime.now());
-        body.put("message:", ex.getMessage());
-        body.put("description:", request.getDescription(false));
-        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(BlogAPIException.class)
-    public ResponseEntity<Object> blogNotFoundException(
-            BlogAPIException ex, WebRequest request) {
-
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp:", LocalDateTime.now());
-        body.put("message:", ex.getMessage());
-        body.put("description:", request.getDescription(false));
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponse> blogNotFoundException(BlogAPIException ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> globalException(
-            Exception ex, WebRequest request) {
-
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp:", LocalDateTime.now());
-        body.put("message:", ex.getMessage());
-        body.put("description:", request.getDescription(false));
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Object> globalException(Exception ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
 
@@ -75,38 +65,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
-        // Create a custom error response object
-        ErrorResponse errorResponse = new ErrorResponse(statusCode, ex.getMessage());
-
-        // Return the error response with appropriate HTTP status code
-        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
-    }
 
 
-//    @ExceptionHandler({MalformedJwtException.class, ExpiredJwtException.class, UnsupportedJwtException.class,
-//            IllegalArgumentException.class})
-//    public ResponseEntity<Object> handleJwtExceptions(Exception ex,WebRequest request) {
-//        Map<String, Object> body = new LinkedHashMap<>();
-//        body.put("timestamp:", LocalDateTime.now());
-//        body.put("message:", ex.getMessage());
-//        body.put("description:", request.getDescription(false));
-//
-//
-//        if (ex instanceof MalformedJwtException) {
-//            return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-//        } else if (ex instanceof ExpiredJwtException) {
-//            return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-//        } else if (ex instanceof UnsupportedJwtException) {
-//            return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-//        } else if (ex instanceof IllegalArgumentException) {
-//            return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-//        } else {
-//            // Handle any other exceptions not explicitly caught above
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
-//        }
-//    }
+
 
 
 }

@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -56,12 +57,9 @@ public class AuthServiceImple implements AuthService {
 
     @Override
     public String register(RegisterDto registerDto) {
-        // add check for password and confirmPassword are same
-//        if(!registerDto.getPassword().equals(registerDto.getConfirmPassword())){
-//           return "password and confirmPassword should be same!";
-//        }
+
         // add check for username exists in database
-        if (userRepository.existsByUsername(registerDto.getUsername())) {
+        if (userRepository.existsByName(registerDto.getName())) {
             throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Username is already exists!.");
         }
 
