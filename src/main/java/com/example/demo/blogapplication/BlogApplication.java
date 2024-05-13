@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
+import io.unlogged.Unlogged;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditor")
@@ -54,6 +56,7 @@ public class BlogApplication implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Unlogged
     public static void main(String[] args) {
         SpringApplication.run(BlogApplication.class, args);
     }
